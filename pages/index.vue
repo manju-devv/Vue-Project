@@ -67,27 +67,62 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6 mt-16">
-      <div class="card cursor-pointer" v-for="(item,index) in cook" :key="index">
-        <div class="data bg-gray-100 border border-solid border-blue-200 flex flex-col p-2 rounded-md overflow-hidden">
-          <img :src="item.image" class="item rounded-md" alt="">
-          <div class="mt-6 flex flex-col ">
-            <div class="name flex items-center justify-center">
-              <h1>{{ item.name }}</h1>
-            </div>
-            <div class="flex justify-around mt-5">
-              <p>time: {{ item.cookTimeMinutes }}min</p>
-              <p>calories: {{ item.caloriesPerServing }}</p>
-            </div>
-            <div class="flex items-start justify-around">
-              <p>ratings: {{ item.rating }}</p>
-              <p>reviews: {{ item.reviewCount }}</p>
+    <div class="flex flex-row items-center justify-center mt-28 ">
+      <button class="bg-gray-800 text-white px-4 py-2 rounded-md absolute left-40">
+          ◀ 
+        </button>
+      <div class="max-w-[940px] flex  gap-4 overflow-hidden">
+        <div class="card cursor-pointer" v-for="(item,index) in cook" :key="index">
+          <div class="data w-[300px] bg-gray-100 border border-solid border-blue-200 p-2 rounded-md overflow-hidden">
+            <img :src="item.image" class="item rounded-md" alt="">
+            <div class="mt-6 flex flex-col">
+              <div class="name flex items-center justify-center">
+                <h1>{{ item.name }}</h1>
+              </div>
+              <div class="flex justify-around mt-5">
+                <p>time: {{ item.cookTimeMinutes }}min</p>
+                <p>calories: {{ item.caloriesPerServing }}</p>
+              </div>
+              <div class="flex items-start justify-around">
+                <p>ratings: {{ item.rating }}</p>
+                <p>reviews: {{ item.reviewCount }}</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <button class="bg-gray-800 text-white px-4 py-2 rounded-md absolute right-40">
+           ▶
+      </button>
     </div>
 </template>
+
+<!-- @click="prevPage"
+:disabled="currentIndex === 0"
+@click="nextPage"
+:disabled="currentIndex + 3 >= cook.length" -->
+
+    <!-- Navigation Buttons -->
+    <!-- <div class="flex justify-between w-full max-w-lg mt-6">
+      <button 
+        @click="prevPage"
+        class="bg-gray-800 text-white px-4 py-2 rounded-md"
+        :disabled="currentIndex === 0"
+      >
+        ◀ Previous
+      </button>
+
+      <button 
+        @click="nextPage"
+        class="bg-gray-800 text-white px-4 py-2 rounded-md"
+        :disabled="currentIndex + 3 >= cook.length"
+      >
+        Next ▶
+      </button>
+    </div> -->
+  <!-- </div>
+</template> -->
+
 
 
 <style scoped>
