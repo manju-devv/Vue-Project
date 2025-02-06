@@ -1,0 +1,20 @@
+body{
+    font-family: "Red Hat Display", serif;
+    background: url("https://images5.alphacoders.com/936/936943.jpg");
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+
+
+
+.text-cutout {
+    background-image: url("https://images5.alphacoders.com/936/936943.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    
+    
+    /* mix-blend-mode: multiply;  */
+    font-weight: bold;
+  }
+
+
