@@ -53,75 +53,109 @@ onMounted(() => {
  <script setup lang="ts">
   import type { Recipe } from '~/Types/recipe';
   const cook = ref<Recipe[]>([]);
+  const currentIndex = ref(0);
+  const items = ref(3);
+  const isMobile = ref(false);
   
   const {data,error,status} = await useAsyncData<{recipes:Recipe[]}>('recipes',()=>$fetch("https://dummyjson.com/recipes"));
   watchEffect(()=>{
     if(data.value){
       cook.value = data.value.recipes;
-      console.log(cook.value)
     }
   });
+
   if(error.value){
     console.log(error.value)
   }
+const visibleCards = computed(()=>{
+  return isMobile.value ? cook.value : cook.value.slice(currentIndex.value,currentIndex.value+items.value)
+});
+
+const next = () => {
+  if(currentIndex.value < cook.value.length - items.value){
+    currentIndex.value++;
+  }else{
+    currentIndex.value = 0;
+  };
+};
+const prev = () => {
+  if(currentIndex.value > 0){
+    currentIndex.value--;
+  }else{
+    currentIndex.value = cook.value.length - items.value;
+  }
+};
+
+const updateWindow = () => {
+  const width = window.innerWidth;
+  if(width <= 640){
+    items.value = 1;
+    isMobile.value = true;
+  } else if(width <= 1024){
+    items.value = 2;
+    isMobile.value = false;
+  } else {
+    items.value = 3;
+    isMobile.value = false;
+  }
+}
+
+onMounted(()=>{
+  updateWindow();
+  window.addEventListener('resize',updateWindow);
+});
+
+onUnmounted(()=>{
+  window.removeEventListener('resize',updateWindow)
+})
+
 </script>
 
 <template>
-    <div class="flex flex-row items-center justify-center mt-28 ">
-      <button class="bg-gray-800 text-white px-4 py-2 rounded-md absolute left-40">
+    <div class="flex flex-col sm:flex-row items-center justify-center mt-28 mb-10">
+      <button v-if="!isMobile" @click="prev" class="bg-gray-800 text-white px-4 py-2 rounded-md mr-2 absolute left-20">
           ◀ 
         </button>
-      <div class="max-w-[940px] flex  gap-4 overflow-hidden">
-        <div class="card cursor-pointer" v-for="(item,index) in cook" :key="index">
-          <div class="data w-[300px] bg-gray-100 border border-solid border-blue-200 p-2 rounded-md overflow-hidden">
-            <img :src="item.image" class="item rounded-md" alt="">
-            <div class="mt-6 flex flex-col">
-              <div class="name flex items-center justify-center">
-                <h1>{{ item.name }}</h1>
+      <div class=" flex gap-4 sm:flex-row flex-col md:max-w-[620px] lg:max-w-[940px]"
+      :class="{ 'mobile-scroll': isMobile, 'horizontal-scroll': !isMobile }">
+        <TransitionGroup name="slide-fade">
+          <div class="card cursor-pointer" v-for="(item,index) in visibleCards" :key="item.id">
+            <div class="data w-[280px] bg-gray-100 border border-solid border-blue-200 p-8 rounded-md shadow-lg md:w-[300px] md:p-2">
+              <div class="dynamic-rotation">
+                <div class="inner">
+                  <div class="flip-img">
+                    <img :src="item.image" class="item rounded-md" alt="">
+                  </div>
+                  <div class="flip-data">
+                    <h2 class="text-xl underline">Ingredients</h2>
+                    <p v-for="(ingredient,i) in item.ingredients.slice(0,6)" :key="i">{{ `${i+1}. ${ingredient}` }}</p>
+                  </div>
+                </div>
               </div>
-              <div class="flex justify-around mt-5">
-                <p>time: {{ item.cookTimeMinutes }}min</p>
-                <p>calories: {{ item.caloriesPerServing }}</p>
+             
+              <div class="mt-6 flex flex-col">
+                <div class="name flex items-center justify-center">
+                  <h1>{{ item.name }}</h1>
+                </div>
+                <div class="flex justify-around mt-5">
+                  <p>time: {{ item.cookTimeMinutes }}min</p>
+                  <p>calories: {{ item.caloriesPerServing }}</p>
+                </div>
+                <div class="flex items-start justify-around">
+                  <p>ratings: {{ item.rating }}</p>
+                  <p>reviews: {{ item.reviewCount }}</p>
+                </div>
               </div>
-              <div class="flex items-start justify-around">
-                <p>ratings: {{ item.rating }}</p>
-                <p>reviews: {{ item.reviewCount }}</p>
-              </div>
+              <p class="text-end mt-4">See Details</p>
             </div>
           </div>
-        </div>
+        </TransitionGroup>
       </div>
-      <button class="bg-gray-800 text-white px-4 py-2 rounded-md absolute right-40">
-           ▶
+      <button v-if="!isMobile" @click="next" class="bg-gray-800 text-white px-4 py-2 rounded-md ml-2 absolute right-20">
+        ▶
       </button>
     </div>
 </template>
-
-<!-- @click="prevPage"
-:disabled="currentIndex === 0"
-@click="nextPage"
-:disabled="currentIndex + 3 >= cook.length" -->
-
-    <!-- Navigation Buttons -->
-    <!-- <div class="flex justify-between w-full max-w-lg mt-6">
-      <button 
-        @click="prevPage"
-        class="bg-gray-800 text-white px-4 py-2 rounded-md"
-        :disabled="currentIndex === 0"
-      >
-        ◀ Previous
-      </button>
-
-      <button 
-        @click="nextPage"
-        class="bg-gray-800 text-white px-4 py-2 rounded-md"
-        :disabled="currentIndex + 3 >= cook.length"
-      >
-        Next ▶
-      </button>
-    </div> -->
-  <!-- </div>
-</template> -->
 
 
 
@@ -139,7 +173,67 @@ onMounted(() => {
   .item{
     transition: 2s ease;
   }
-  .item:hover{
-    transform: scale(1.04);
+
+
+  .slide-fade-enter-active, .slide-fade-leave-active{
+    transition: transform 0.5s ease, opacity 0.5s ease;
   }
+  .slide-fade-enter-from{
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  .slide-fade-leave-to{
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  .dynamic-rotation{
+    perspective: 1000px;
+  }
+
+  .inner{
+    transition: 1s ease;
+    position: relative;
+    transform-style: preserve-3d;
+  }
+
+  .dynamic-rotation:hover .inner{
+    transform: rotateY(180deg);
+  }
+  .flip-image,.flip-data{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+  }
+  .flip-img{
+    border-radius: 6px;
+  }
+  .flip-data{
+  background: black;
+  color: white;
+  transform: rotateY(180deg);
+  padding: 20px;
+
+  }
+
+
+  @media screen and (max-width: 640px) {
+  .mobile-scroll {
+    height: 80vh;
+    overflow-y: scroll;
+  }
+}
+
+@media screen and (min-width: 640px) {
+  .horizontal-scroll {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+}
+
 </style>

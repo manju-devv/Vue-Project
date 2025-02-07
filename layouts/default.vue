@@ -92,9 +92,6 @@
         0% {
             transform: translateY(-50%); 
         }
-        50% {
-            transform: translateY(0%); 
-        }
         100% {
             transform: translateY(0%); 
         }
@@ -117,18 +114,30 @@
             display: flex;
             gap: 0.5rem;
         }
-        .menu-icon,.isVisible .link {
+        .menu-icon {
             animation: move 1s ease; 
+        }
+        .isVisible .link {
+            animation: slow 1s ease; 
         }
 
         @keyframes move {
+        0% {
+            transform: translateX(250%); 
+        }
+        100% {
+            transform: translateX(0%); 
+        }
+        }
+
+        @keyframes slow {
         0% {
             transform: translateX(100%); 
         }
         100% {
             transform: translateX(0%); 
         }
-    }
+        }
 
 
     }
