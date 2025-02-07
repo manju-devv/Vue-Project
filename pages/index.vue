@@ -146,7 +146,7 @@ onUnmounted(()=>{
                   <p>reviews: {{ item.reviewCount }}</p>
                 </div>
               </div>
-              <p class="text-end mt-4">See Details</p>
+              <NuxtLink :to="`/products/${item.id}`"><p class="text-end mt-4">See Details</p></NuxtLink>
             </div>
           </div>
         </TransitionGroup>

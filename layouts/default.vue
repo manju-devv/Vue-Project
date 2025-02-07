@@ -131,20 +131,14 @@
         }
 
         @keyframes slow {
-        0% {
-            transform: translateX(100%); 
-        }
-        100% {
-            transform: translateX(0%); 
-        }
+            0% {
+                transform: translateX(100%); 
+            }
+            100% {
+                transform: translateX(0%); 
+            }
         }
 
 
-    }
-    @media screen and (max-width:425px) {
-        
-    }
-    @media screen and (max-width:375px) {
-        
     }
 </style>
