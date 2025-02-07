@@ -113,7 +113,7 @@ onUnmounted(()=>{
 
 <template>
     <div class="flex flex-col sm:flex-row items-center justify-center mt-28 mb-10">
-      <button v-if="!isMobile" @click="prev" class="bg-gray-800 text-white px-4 py-2 rounded-md mr-2 absolute left-20">
+      <button v-if="!isMobile" @click="prev" class="bg-gray-800 text-white px-4 py-2 rounded-md mr-2">
           ◀ 
         </button>
       <div class=" flex gap-4 sm:flex-row flex-col md:max-w-[620px] lg:max-w-[940px]"
@@ -151,7 +151,7 @@ onUnmounted(()=>{
           </div>
         </TransitionGroup>
       </div>
-      <button v-if="!isMobile" @click="next" class="bg-gray-800 text-white px-4 py-2 rounded-md ml-2 absolute right-20">
+      <button v-if="!isMobile" @click="next" class="bg-gray-800 text-white px-4 py-2 rounded-md ml-2">
         ▶
       </button>
     </div>
